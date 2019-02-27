@@ -12,7 +12,6 @@ def init_browser():
 def scrape():
     browser = init_browser()
     mars_info = {}
-    
 # Latest News
     url = "https://mars.nasa.gov/news/?page=0&per_page=40&order=publish_date+desc%2Ccreated_at\
     +desc&search=&category=19%2C165%2C184%2C204&blank_scope=Latest"
@@ -53,7 +52,7 @@ def scrape():
     for tweet in tweets:
         mars_weather = tweet.find('p').text
         if 'Sol' and 'pressure' in mars_weather:
-            print(mars_weather)
+            return(mars_weather)
             break
         else:
             pass
@@ -64,7 +63,8 @@ def scrape():
     df.columns = ['Description','Value']
     df.set_index('Description', inplace=True)
     df.to_html()
-    facts_data = df.to_dict(orient='records')
+    df.to_dict(orient='records')
+    return df
     
 # Hemispheres
     hemi_url = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
@@ -77,22 +77,22 @@ def scrape():
     hemisphere_image_urls = []
     base_url = "https://astrogeology.usgs.gov"
     
-        for image in images: 
-            title = image.find('h3').text
-            img_link = image.find('a')['href']
-            full_link = base_url + img_link
+    for image in images: 
+        title = image.find('h3').text
+        img_link = image.find('a')['href']
+        full_link = base_url + img_link
 
-            browser.visit(full_link)
+        browser.visit(full_link)
 
-            html=browser.html
-            soup=BeautifulSoup(html, 'html.parser')
+        html=browser.html
+        soup=BeautifulSoup(html, 'html.parser')
 
-            image_link = soup.find("img", class_="wide-image")["src"]
-            img_url = base_url + image_link
+        image_link = soup.find("img", class_="wide-image")["src"]
+        img_url = base_url + image_link
 
-            hemisphere_image_urls.append({'title': title, 'img_url': img_url})
+        hemisphere_image_urls.append({'title': title, 'img_url': img_url})
 
-        hemisphere_image_urls
+    hemisphere_image_urls
         
     mars_info["news_title"] = news_title
     mars_info["news_para"] = news_para
